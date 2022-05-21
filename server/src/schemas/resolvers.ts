@@ -1,6 +1,11 @@
 import { AuthenticationError } from "apollo-server-express";
 import User from "../models/User.js";
-import { signToken } from "../utils/auth";
+import { signToken } from "../utils/auth.js";
+
+interface credentials {
+  username: string;
+  password: string;
+}
 
 export const resolvers = {
   Query: {
@@ -14,6 +19,29 @@ export const resolvers = {
       }
 
       throw new AuthenticationError("Not logged in");
+    },
+  },
+  Mutation: {
+    addUser: async (_parent: any, args: credentials) => {
+      const user = await User.create(args);
+      const token = signToken(user);
+      return { token, user };
+    },
+    login: async (_parent: any, { username, password }: credentials) => {
+      const user = await User.findOne({ username });
+
+      if (!user) {
+        throw new AuthenticationError("Incorrect Credentials");
+      }
+
+      const correctPw = await user.isCorrectPassword(password);
+
+      if (!correctPw) {
+        throw new AuthenticationError("Incorrect Credentials");
+      }
+
+      const token = signToken(user);
+      return { token, user };
     },
   },
 };

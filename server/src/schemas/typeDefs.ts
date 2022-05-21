@@ -7,7 +7,17 @@ export const typeDefs = gql`
     email: String
   }
 
+  type Auth {
+    token: ID!
+    user: User
+  }
+
   type Query {
     me: User
+  }
+
+  type Mutation {
+    login(username: String!, password: String!): Auth
+    addUser(username: String!, email: String!, password: String!): Auth
   }
 `;
