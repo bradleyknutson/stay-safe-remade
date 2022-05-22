@@ -6,7 +6,7 @@ import {
 } from "@apollo/client";
 import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { SignupPage } from "./components/SignupPage/SignupPage";
+import { AuthPage } from "./components/AuthPage/AuthPage";
 
 import { setContext } from "@apollo/client/link/context";
 
@@ -34,7 +34,8 @@ function App() {
     <ApolloProvider client={client}>
       <BrowserRouter>
         <Routes>
-          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/signup" element={<AuthPage variant="signup" />} />
+          <Route path="/login" element={<AuthPage variant="login" />} />
         </Routes>
       </BrowserRouter>
     </ApolloProvider>

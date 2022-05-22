@@ -5,6 +5,7 @@ import { signToken } from "../utils/auth.js";
 interface credentials {
   username: string;
   password: string;
+  email?: string;
 }
 
 export const resolvers = {

@@ -1,7 +1,8 @@
 import React, { SyntheticEvent, useState } from "react";
 import { Button, Container, Grid, TextField } from "@mui/material";
 import { useMutation } from "@apollo/client";
-import { ADD_USER } from "../../utils/mutations";
+import { ADD_USER, LOGIN_USER } from "../../utils/mutations";
+import auth from "../../utils/auth";
 
 const SignupStyle = {
   display: "flex",
@@ -9,13 +10,19 @@ const SignupStyle = {
   height: "100vh",
 };
 
-export const SignupPage = () => {
+interface AuthPageProps {
+  variant: "login" | "signup";
+}
+
+export const AuthPage = (props: AuthPageProps) => {
+  const { variant } = props;
   const [userFormData, setUserFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
-  const [addUser, { error }] = useMutation(ADD_USER);
+  const [addUser, { error: addUserError }] = useMutation(ADD_USER);
+  const [login, { error: loginError }] = useMutation(LOGIN_USER);
 
   const handleInputChange = (e: SyntheticEvent) => {
     const { name, value } = e.target as HTMLInputElement;
@@ -23,16 +30,40 @@ export const SignupPage = () => {
     setUserFormData({ ...userFormData, [name]: value });
   };
 
-  const handleFormSubmit = async (e: SyntheticEvent) => {
-    e.preventDefault();
+  const loginHandler = async () => {
+    try {
+      const { data } = await login({
+        variables: { ...userFormData },
+      });
 
+      auth.login(data.login.token);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const signupHandler = async () => {
     try {
       const { data } = await addUser({
         variables: { ...userFormData },
       });
-      console.log(data);
+      auth.login(data.addUser.token);
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const handleAuth = async (e: SyntheticEvent) => {
+    e.preventDefault();
+    switch (variant) {
+      case "login":
+        loginHandler();
+        break;
+      case "signup":
+        signupHandler();
+        break;
+      default:
+        break;
     }
   };
 
@@ -62,44 +93,33 @@ export const SignupPage = () => {
           />
         </Grid>
         <Grid item>
-          <TextField
-            required
-            id="email"
-            name="email"
-            label="email"
-            variant="outlined"
-            fullWidth
-            onChange={handleInputChange}
-          />
+          {variant === "signup" && (
+            <TextField
+              required
+              id="email"
+              name="email"
+              label="email"
+              variant="outlined"
+              fullWidth
+              onChange={handleInputChange}
+            />
+          )}
         </Grid>
         <Grid item display="flex" justifyContent="flex-end">
           <Button
             variant="contained"
             color="success"
-            onClick={() => {
-              console.log(
-                userFormData.username,
-                userFormData.password,
-                userFormData.email
-              );
-            }}
-          >
-            Sign In
-          </Button>
-          <Button
-            href="/signup"
-            variant="contained"
-            color="secondary"
             disabled={
               !(
                 userFormData.username &&
-                userFormData.email &&
-                userFormData.username
+                userFormData.password &&
+                (variant === "login" || userFormData.email)
               )
             }
-            onClick={handleFormSubmit}
+            onClick={handleAuth}
           >
-            Sign Up
+            {variant === "signup" && "Sign Up"}
+            {variant === "login" && "Login"}
           </Button>
         </Grid>
       </Container>
