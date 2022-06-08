@@ -1,3 +1,4 @@
+import Context from "@mui/base/TabsUnstyled/TabsContext";
 import { AuthenticationError } from "apollo-server-express";
 import User from "../models/User.js";
 import { signToken } from "../utils/auth.js";
@@ -12,14 +13,18 @@ export const resolvers = {
   Query: {
     me: async (_parent: any, args: any, context: any) => {
       if (context.user) {
-        const userData = await User.findOne({ _id: context.user._id }).select(
-          "-__v -password"
-        );
-
+        const { _id: userId } = context.user.data;
+        const userData = await User.findOne({ _id: userId })
+          .select("-__v -password")
+          .populate("friends");
         return userData;
       }
 
       throw new AuthenticationError("Not logged in");
+    },
+    users: async (_parent: any, args: any, context: any) => {
+      const users = User.find().select("-__v -password").populate("friends");
+      return users;
     },
   },
   Mutation: {
@@ -43,6 +48,37 @@ export const resolvers = {
 
       const token = signToken(user);
       return { token, user };
+    },
+    addFriend: async (_parent: any, { friendId }: any, context: any) => {
+      if (context.user) {
+        const { _id: userId } = context.user.data;
+        if (userId === friendId) {
+          throw new AuthenticationError("Unable to add yourself as a friend");
+        }
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: userId },
+          { $addToSet: { friends: friendId } },
+          { new: true }
+        )
+          .select("-__v -password")
+          .populate("friends");
+        return updatedUser;
+      }
+      throw new AuthenticationError("Not logged in");
+    },
+    removeFriend: async (_parent: any, { friendId }: any, context: any) => {
+      if (context.user) {
+        const { _id: userId } = context.user.data;
+        const updatedUser = await User.findByIdAndUpdate(
+          { _id: userId },
+          { $pull: { friends: friendId } },
+          { new: true }
+        )
+          .select("-__v -password")
+          .populate("friends");
+        return updatedUser;
+      }
+      throw new AuthenticationError("Not logged in");
     },
   },
 };
