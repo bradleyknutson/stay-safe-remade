@@ -25,11 +25,18 @@ const userSchema = new Schema(
         ref: "User",
       },
     ],
+    events: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Event",
+      },
+    ],
   },
   {
     toJSON: {
       virtuals: true,
     },
+    timestamps: true,
   }
 );
 

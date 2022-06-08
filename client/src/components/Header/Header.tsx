@@ -44,6 +44,10 @@ interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
 }
 
+interface HeaderProps {
+  children: JSX.Element;
+}
+
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })<AppBarProps>(({ theme, open }) => ({
@@ -70,7 +74,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   justifyContent: "flex-end",
 }));
 
-export const Header = () => {
+export const Header = ({ children }: HeaderProps) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -160,6 +164,7 @@ export const Header = () => {
       </Drawer>
       <Main open={open}>
         <DrawerHeader />
+        {children}
       </Main>
     </Box>
   );
