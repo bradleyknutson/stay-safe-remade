@@ -29,7 +29,7 @@ const eventSchema = new Schema(
 eventSchema.virtual("eventDuration").get(function () {
   if (!this.ended) return null;
   const durationInSeconds = (this.ended - this.started) / 1000;
-  const durationInMinutes = durationInSeconds / 60;
+  const durationInMinutes = Math.round(durationInSeconds / 60);
   return durationInMinutes;
 });
 

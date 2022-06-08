@@ -17,6 +17,7 @@ export const typeDefs = gql`
   }
 
   type Event {
+    _id: ID!
     location: String
     timeEstimate: Int
     started: Date
@@ -27,15 +28,16 @@ export const typeDefs = gql`
   type Query {
     me: User
     users: [User]
-    usersByUsername(username: String!): [User]
+    usersByUsername(username: ID!): [User]
     userEvents: [Event]
   }
 
   type Mutation {
     login(username: String!, password: String!): Auth
     addUser(username: String!, email: String!, password: String!): Auth
-    addFriend(friendId: String!): User
-    removeFriend(friendId: String!): User
+    addFriend(friendId: ID!): User
+    removeFriend(friendId: ID!): User
     createEvent(location: String!, timeEstimate: Int!): Event
+    endEvent(eventId: ID): Event
   }
 `;

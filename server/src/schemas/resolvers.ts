@@ -1,4 +1,4 @@
-import { AuthenticationError } from "apollo-server-express";
+import { ApolloError, AuthenticationError } from "apollo-server-express";
 import { DateTimeResolver } from "graphql-scalars";
 import Event from "../models/Event.js";
 import User from "../models/User.js";
@@ -13,16 +13,20 @@ export const resolvers = {
   Date: DateTimeResolver,
   Query: {
     me: async (_parent: any, args: any, context: any) => {
-      if (context.user) {
-        const { _id: userId } = context.user.data;
-        const userData = await User.findOne({ _id: userId })
-          .select("-__v -password")
-          .populate("friends")
-          .populate("events");
-        return userData;
-      }
+      try {
+        if (context.user) {
+          const { _id: userId } = context.user.data;
+          const userData = await User.findOne({ _id: userId })
+            .select("-__v -password")
+            .populate("friends")
+            .populate("events");
+          return userData;
+        }
 
-      throw new AuthenticationError("Not logged in");
+        throw new AuthenticationError("Not logged in");
+      } catch (err) {
+        throw new ApolloError(err);
+      }
     },
     users: async (_parent: any, args: any, context: any) => {
       const users = await User.find()
@@ -101,6 +105,17 @@ export const resolvers = {
         return newEvent;
       }
       throw new AuthenticationError("Not logged in");
+    },
+    endEvent: async (_parent: any, { eventId }: any, context: any) => {
+      try {
+        const updatedEvent = await Event.findByIdAndUpdate(
+          { _id: eventId },
+          { $set: { ended: Date.now() } }
+        );
+        return updatedEvent;
+      } catch (err) {
+        throw new ApolloError(err);
+      }
     },
   },
 };
