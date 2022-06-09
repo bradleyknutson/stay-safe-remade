@@ -16,8 +16,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
-import auth from "../../utils/auth";
-import { Avatar } from "@mui/material";
+import Auth from "../../utils/auth";
+import { AvatarMenu } from "./AvatarMenu";
 
 const drawerWidth = 240;
 
@@ -104,19 +104,12 @@ export const Header = ({ children }: HeaderProps) => {
           <Typography variant="h6" noWrap component="div">
             StaySafe
           </Typography>
-          {!auth.loggedIn() ? (
+          {!Auth.loggedIn() ? (
             <Button href="/login" color="inherit" sx={{ ml: "auto" }}>
               Login
             </Button>
           ) : (
-            <IconButton
-              sx={{ ml: "auto" }}
-              onClick={() => console.log("button pressed")}
-            >
-              <Avatar src="" sx={{ width: 50, height: 50 }}>
-                BK
-              </Avatar>
-            </IconButton>
+            <AvatarMenu />
           )}
         </Toolbar>
       </AppBar>
@@ -142,15 +135,6 @@ export const Header = ({ children }: HeaderProps) => {
             )}
           </IconButton>
         </DrawerHeader>
-        <List>
-          {["Edit Profile"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
         <Divider />
         <List>
           {["Friends List", "Add Friend"].map((text, index) => (

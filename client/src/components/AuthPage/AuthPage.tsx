@@ -106,6 +106,11 @@ export const AuthPage = (props: AuthPageProps) => {
           )}
         </Grid>
         <Grid item display="flex" justifyContent="flex-end">
+          {variant === "login" && (
+            <Button variant="contained" color="success" href={"/signup"}>
+              Create Account
+            </Button>
+          )}
           <Button
             variant="contained"
             color="success"
