@@ -1,5 +1,6 @@
 import { Avatar, IconButton, Menu, MenuItem } from "@mui/material";
 import React, { useState } from "react";
+import Auth from "../../utils/auth";
 
 export const AvatarMenu = () => {
   const [anchorEl, setAnchorEl]: any = useState(null);
@@ -8,6 +9,7 @@ export const AvatarMenu = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <>
       <IconButton
@@ -28,6 +30,7 @@ export const AvatarMenu = () => {
         onClose={handleClose}
       >
         <MenuItem onClick={handleClose}>Profile</MenuItem>
+        <MenuItem onClick={Auth.logout}>Logout</MenuItem>
       </Menu>
     </>
   );
