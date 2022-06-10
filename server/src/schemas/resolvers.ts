@@ -41,6 +41,20 @@ export const resolvers = {
       }).select("username _id");
       return users;
     },
+    userFriends: async (_parent: any, args: any, context: any) => {
+      try {
+        if (context.user) {
+          const { friends } = await User.findById(context.user.data._id)
+            .select("friends")
+            .populate("friends", "_id username email");
+          console.log(friends);
+          return friends;
+        }
+        throw new AuthenticationError("Not logged in");
+      } catch (err) {
+        throw new ApolloError(err);
+      }
+    },
   },
   Mutation: {
     addUser: async (_parent: any, args: credentials) => {

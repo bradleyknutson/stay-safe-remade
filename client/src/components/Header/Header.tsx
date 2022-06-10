@@ -18,6 +18,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Button from "@mui/material/Button";
 import Auth from "../../utils/auth";
 import { AvatarMenu } from "./AvatarMenu";
+import { FriendsList } from "../FriendsList/FriendsList";
 
 const drawerWidth = 240;
 
@@ -137,13 +138,20 @@ export const Header = ({ children }: HeaderProps) => {
         </DrawerHeader>
         <Divider />
         <List>
-          {["Friends List", "Add Friend"].map((text, index) => (
-            <ListItem key={text} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={text} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemText primary="Friends List" />
+            </ListItemButton>
+          </ListItem>
+        </List>
+        <FriendsList />
+        <Divider />
+        <List>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemText primary="Add Friend" />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
       <Main open={open}>

@@ -30,6 +30,7 @@ export const typeDefs = gql`
     users: [User]
     usersByUsername(username: ID!): [User]
     userEvents: [Event]
+    userFriends: [User]
   }
 
   type Mutation {
