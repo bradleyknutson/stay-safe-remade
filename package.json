@@ -5,7 +5,8 @@
   "main": "server/index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"cd server && yarn dev\" \"cd client && yarn start\""
+    "dev": "concurrently \"cd server && yarn dev\" \"cd client && yarn start\"",
+    "install": "cd server && yarn && cd ../client && yarn"
   },
   "repository": {
     "type": "git",
