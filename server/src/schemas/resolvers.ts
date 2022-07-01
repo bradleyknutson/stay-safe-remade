@@ -47,7 +47,6 @@ export const resolvers = {
           const { friends } = await User.findById(context.user.data._id)
             .select("friends")
             .populate("friends", "_id username email");
-          console.log(friends);
           return friends;
         }
         throw new AuthenticationError("Not logged in");
